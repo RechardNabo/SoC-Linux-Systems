@@ -1,22 +1,18 @@
-/* main.c — kit module #6 5V Relay — standalone firmware, STM32H563.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (52 tests). */
+/* main.c — Relay click cadence — active-LOW power-on safety is the contract.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in relay_app.c and is pinned by the
+ * project's 3 host tests (see test_relay_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "relay_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    dig_out_t relay;
-    dig_out_config_t cfg = kit_dig_out_config(KIT_RELAY, kit_default_pin(KIT_RELAY));  /* ACTIVE-LOW baked in */
-    uint32_t n = 0U;
-    dig_out_init(&relay, &cfg);   /* coil guaranteed OFF from power-on */
+    relay_app_t app;
+    relay_app_init(&app, kit_default_pin(KIT_RELAY));
     for (;;) {
-        dig_out_toggle(&relay);
-        for (n = 0U; n < LOOP_PAUSE * 4U; n++) { }
+        relay_app_step(&app);
+        /* 10ms tick on target */
     }
+    return 0;
 }

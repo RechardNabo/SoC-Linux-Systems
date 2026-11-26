@@ -1,24 +1,20 @@
-/* main.c — kit module #31 Piezo Knock — standalone firmware, STM32H755.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (60 tests). */
+/* main.c — Knock event counter. Binding only — logic in knock_app.c.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in knock_app.c and is pinned by the
+ * project's 3 host tests (see test_knock_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "knock_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    dig_in_t sensor;
-    dig_in_config_t cfg = kit_dig_in_config(KIT_KNOCK, kit_default_pin(KIT_KNOCK));
-    uint32_t events = 0U;
-    bool was = false;
-    dig_in_init(&sensor, &cfg);
+    knock_app_t app;
+    knock_app_init(&app, kit_default_pin(KIT_KNOCK));
     for (;;) {
-        dig_in_sample(&sensor);
-        if (dig_in_state(&sensor) && !was) events++;
-        was = dig_in_state(&sensor);
+        if (knock_app_step(&app)) {
+            /* activation edge — hook LED/UART report here on target */
+        }
+        /* 10ms tick on target */
     }
+    return 0;
 }

@@ -1,24 +1,20 @@
-/* main.c — kit module #17 Magic Cup — standalone firmware, STM32H755.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (60 tests). */
+/* main.c — Magic Cup threshold monitor. Binding only — logic in magic_cup_app.c.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in magic_cup_app.c and is pinned by the
+ * project's 3 host tests (see test_magic_cup_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "magic_cup_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-#include "../../drivers/peripherals/adc/stm_adc.h"
-#include "../../drivers/peripherals/tim/stm_tim.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    analog_in_t sensor;
-    analog_in_config_t cfg = kit_analog_config(KIT_MAGIC_CUP, 0U);
-    int32_t eng = 0;
-    stm_adc_init();
-    analog_in_init(&sensor, &cfg);
+    magic_cup_app_t app;
+    magic_cup_app_init(&app, 0U);
     for (;;) {
-        analog_in_read_scaled(&sensor, &eng);   /* report over USART3 console */
+        if (magic_cup_app_step(&app)) {
+            /* threshold event — hook alarm/LED here on target */
+        }
+        /* 10ms tick on target */
     }
+    return 0;
 }

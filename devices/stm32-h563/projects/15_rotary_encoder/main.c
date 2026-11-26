@@ -1,24 +1,18 @@
-/* main.c — kit module #15 KY-040 Encoder — standalone firmware, STM32H563.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (52 tests). */
+/* main.c — Encoder as bounded 0-100 control with push-reset.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in rotary_encoder_app.c and is pinned by the
+ * project's 3 host tests (see test_rotary_encoder_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "rotary_encoder_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    quad_enc_t enc;
-    quad_enc_config_t ecfg = { DEVPAL_PIN(STM_PORTB, 8), DEVPAL_PIN(STM_PORTB, 9), 1 };
-    int32_t last = 0;
-    quad_enc_init(&enc, &ecfg);
+    rotary_encoder_app_t app;
+    rotary_encoder_app_init(&app, 6U, 7U, 8U);
     for (;;) {
-        quad_enc_sample(&enc);
-        if (quad_enc_detents(&enc) != last) {
-            last = quad_enc_detents(&enc);   /* report over USART3 console */
-        }
+        rotary_encoder_app_step(&app);
+        /* position 0-100 — hook PWM/LED bar here on target */
     }
+    return 0;
 }

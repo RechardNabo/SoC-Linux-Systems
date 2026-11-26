@@ -1,24 +1,20 @@
-/* main.c — kit module #32 LM35 #32 — standalone firmware, STM32H563.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (52 tests). */
+/* main.c — Lm35 B threshold monitor. Binding only — logic in lm35_b_app.c.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in lm35_b_app.c and is pinned by the
+ * project's 3 host tests (see test_lm35_b_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "lm35_b_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-#include "../../drivers/peripherals/adc/stm_adc.h"
-#include "../../drivers/peripherals/tim/stm_tim.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    analog_in_t sensor;
-    analog_in_config_t cfg = kit_analog_config(KIT_LM35_B, 0U);
-    int32_t eng = 0;
-    stm_adc_init();
-    analog_in_init(&sensor, &cfg);
+    lm35_b_app_t app;
+    lm35_b_app_init(&app, 0U);
     for (;;) {
-        analog_in_read_scaled(&sensor, &eng);   /* report over USART3 console */
+        if (lm35_b_app_step(&app)) {
+            /* threshold event — hook alarm/LED here on target */
+        }
+        /* 10ms tick on target */
     }
+    return 0;
 }

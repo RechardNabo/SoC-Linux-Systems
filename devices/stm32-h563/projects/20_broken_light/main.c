@@ -1,24 +1,20 @@
-/* main.c — kit module #20 Light-Break — standalone firmware, STM32H563.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (52 tests). */
+/* main.c — Broken Light event counter. Binding only — logic in broken_light_app.c.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in broken_light_app.c and is pinned by the
+ * project's 3 host tests (see test_broken_light_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "broken_light_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    dig_in_t sensor;
-    dig_in_config_t cfg = kit_dig_in_config(KIT_BROKEN_LIGHT, kit_default_pin(KIT_BROKEN_LIGHT));
-    uint32_t events = 0U;
-    bool was = false;
-    dig_in_init(&sensor, &cfg);
+    broken_light_app_t app;
+    broken_light_app_init(&app, kit_default_pin(KIT_BROKEN_LIGHT));
     for (;;) {
-        dig_in_sample(&sensor);
-        if (dig_in_state(&sensor) && !was) events++;
-        was = dig_in_state(&sensor);
+        if (broken_light_app_step(&app)) {
+            /* activation edge — hook LED/UART report here on target */
+        }
+        /* 10ms tick on target */
     }
+    return 0;
 }

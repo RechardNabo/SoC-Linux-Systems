@@ -1,26 +1,18 @@
-/* main.c — kit module #18 Passive Buzzer — standalone firmware, STM32H563.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (52 tests). */
+/* main.c — Two-octave scale player (STM32: TIM3 ch1).
+ * Standalone flashable firmware; logic pinned by test_buzzer_passive_app.c. */
 #include <stdint.h>
-#include <stdbool.h>
+#include "buzzer_passive_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-#include "../../drivers/peripherals/adc/stm_adc.h"
-#include "../../drivers/peripherals/tim/stm_tim.h"
 
-#define LOOP_PAUSE  400000UL
+#define CLK_HZ  250000000UL
 
 int main(void)
 {
-    buzzer_t buzz;
-    static const uint32_t scale[8] = { 262U, 294U, 330U, 349U, 392U, 440U, 494U, 523U };
-    uint8_t note = 0U;
-    uint32_t n = 0U;
-    buzzer_init(&buzz, STM_TIM3, 1U, 250000000UL);   /* TIM3 ch1 — RGB TIM2 undisturbed */
+    buzzer_passive_app_t app;
+    buzzer_passive_app_init(&app, 1U, CLK_HZ);
     for (;;) {
-        buzzer_tone(&buzz, scale[note]);
-        note = (uint8_t)((note + 1U) % 8U);
-        for (n = 0U; n < LOOP_PAUSE * 2U; n++) { }
+        buzzer_passive_app_step(&app);
+        /* one note per 300ms tick on target */
     }
+    return 0;
 }

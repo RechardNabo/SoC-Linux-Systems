@@ -1,19 +1,15 @@
-/* main.c — kit module #2 IR Receiver — standalone firmware, STM32H563.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (52 tests). */
+/* main.c — IR receiver placeholder — UNSUPPORTED pending PIO capture. Fails loudly.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in ir_receiver_app.c and is pinned by the
+ * project's 3 host tests (see test_ir_receiver_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "ir_receiver_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-
-    for (;;) {
-        /* PLACEHOLDER: needs the 1-wire/capture time engine —
-         * honestly UNSUPPORTED on STM32H563 this pass; see kit.c */
+    if (!ir_receiver_supported()) {
+        for (;;) { /* unsupported until PIO capture lands — see README */ }
     }
+    return 0;
 }

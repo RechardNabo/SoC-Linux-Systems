@@ -1,22 +1,18 @@
-/* main.c — kit module #3 Laser Diode — standalone firmware, STM32H755.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (60 tests). */
+/* main.c — Laser blinker 1Hz. Binding only — logic in laser_app.c.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in laser_app.c and is pinned by the
+ * project's 3 host tests (see test_laser_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "laser_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    dig_out_t dev;
-    dig_out_config_t cfg = kit_dig_out_config(KIT_LASER, kit_default_pin(KIT_LASER));
-    uint32_t n = 0U;
-    dig_out_init(&dev, &cfg);
+    laser_app_t app;
+    laser_app_init(&app, kit_default_pin(KIT_LASER));
     for (;;) {
-        dig_out_toggle(&dev);
-        for (n = 0U; n < LOOP_PAUSE; n++) { }
+        laser_app_step(&app);
+        /* 10ms tick on target */
     }
+    return 0;
 }

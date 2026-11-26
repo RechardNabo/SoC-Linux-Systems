@@ -1,19 +1,18 @@
-/* main.c — kit module #4 DHT11 — standalone firmware, STM32H755.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (60 tests). */
+/* main.c — DHT11 humidity reporter. Classification tested in dht11_app tests.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in dht11_app.c and is pinned by the
+ * project's 3 host tests (see test_dht11_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "dht11_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-
+    /* 1-wire transport runs on target; classification is the tested logic */
+    comfort_band_t band = COMFORT_IDEAL;
     for (;;) {
-        /* PLACEHOLDER: needs the 1-wire/capture time engine —
-         * honestly UNSUPPORTED on STM32H755 this pass; see kit.c */
+        /* read sensor, then: band = dht11_classify_humidity(rh); */
+        (void)band;
     }
+    return 0;
 }

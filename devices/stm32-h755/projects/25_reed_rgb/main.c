@@ -1,24 +1,20 @@
-/* main.c — kit module #25 Reed+RGB — standalone firmware, STM32H755.
- * Super-loop over the device layer. Wiring/verification: README.md.
- * Build: STM32CubeIDE (HAL project provides clocks/init). Host-verified
- * logic: drivers/tests/unit/ (60 tests). */
+/* main.c — Reed Rgb event counter. Binding only — logic in reed_rgb_app.c.
+ * Standalone flashable firmware for this module. Hardware binding lives
+ * here; ALL application logic lives in reed_rgb_app.c and is pinned by the
+ * project's 3 host tests (see test_reed_rgb_app.c, run: cd projects && make). */
 #include <stdint.h>
-#include <stdbool.h>
+#include "reed_rgb_app.h"
 #include "../../drivers/devices/kit/kit.h"
-#include "../../drivers/devices/pal/devpal.h"
-
-#define LOOP_PAUSE  400000UL
 
 int main(void)
 {
-    dig_in_t sensor;
-    dig_in_config_t cfg = kit_dig_in_config(KIT_REED_RGB, kit_default_pin(KIT_REED_RGB));
-    uint32_t events = 0U;
-    bool was = false;
-    dig_in_init(&sensor, &cfg);
+    reed_rgb_app_t app;
+    reed_rgb_app_init(&app, kit_default_pin(KIT_REED_RGB));
     for (;;) {
-        dig_in_sample(&sensor);
-        if (dig_in_state(&sensor) && !was) events++;
-        was = dig_in_state(&sensor);
+        if (reed_rgb_app_step(&app)) {
+            /* activation edge — hook LED/UART report here on target */
+        }
+        /* 10ms tick on target */
     }
+    return 0;
 }
