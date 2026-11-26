@@ -28,11 +28,11 @@ Firmware/SoC skills lab - device-separated workspace for the home-lab plan
 | `devices/dspic30f6014/` | dsPIC30F6014 | Q15 DSP + bit-exact verify (G), I2C reg device (C2) |
 | `devices/stm32-h563/` | STM32H563 | Cortex-M33 bare-metal, MPU/cache/ETH DMA (B3) |
 | `devices/stm32-h755/` | STM32H755 | Dual-core M7+M4 mailbox (B3) |
-| `devices/cyclone4-fpga/` | Cyclone IV E | RTL + cocotb (E1), soft-core RISC-V (E2) |
+| `devices/cyclone3-fpga/` | Cyclone III EP3C16F484C6N (DE0) | RTL + cocotb (E1), soft-core RISC-V (E2) |
 
 ## Lab tracks (from the plan)
 
 - **A** HIL + CI - `hil/`  |  **B** bare-metal - `devices/{rpi3b,pic32mx795,stm32-*}`
 - **C** Linux drivers - `devices/{rpi5,bpi-m5}` + QEMU on PC  |  **D** networking - `devices/bpi-m5` + scripts
-- **E** RTL/RISC-V - `devices/cyclone4-fpga` + QEMU  |  **F** security - `devices/{pic32mx795,esp32,stm32-*}`
+- **E** RTL/RISC-V - `devices/cyclone3-fpga` + QEMU  |  **F** security - `devices/{pic32mx795,esp32,stm32-*}`
 - **G** DSP - `devices/dspic30f6014`  |  **H** debug - `docs/bug-journal`
