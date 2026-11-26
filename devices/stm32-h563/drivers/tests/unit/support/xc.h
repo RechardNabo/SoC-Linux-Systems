@@ -14,6 +14,15 @@ extern volatile uint32_t GPIOE_IDR, GPIOF_IDR, GPIOG_IDR, GPIOH_IDR;
 extern volatile uint32_t GPIOA_BSRR, GPIOB_BSRR, GPIOC_BSRR, GPIOD_BSRR;
 extern volatile uint32_t GPIOE_BSRR, GPIOF_BSRR, GPIOG_BSRR, GPIOH_BSRR;
 volatile uint32_t *mock_odr(int port);
+
+/* ADC1 — behavioral: ADCAL self-clears (calibration completes), ADRDY sets
+ * when ADEN is observed, EOC sets when ADSTART is observed — instant-
+ * completion model. DR/SQR1/CFGR are plain memory. */
+volatile uint32_t *mock_adc1_cr(void);
+volatile uint32_t *mock_adc1_isr(void);
+#define ADC1_CR   (*mock_adc1_cr())
+#define ADC1_ISR  (*mock_adc1_isr())
+extern volatile uint32_t ADC1_SQR1, ADC1_DR, ADC1_CFGR;
 #define GPIOA_ODR (*mock_odr(0))
 #define GPIOB_ODR (*mock_odr(1))
 #define GPIOC_ODR (*mock_odr(2))
@@ -37,10 +46,10 @@ extern volatile uint32_t I2C1CR1, I2C1TIMINGR;
 extern volatile uint32_t I2C2CR1, I2C2TIMINGR;
 
 /* TIM2-5 â€” flat */
-extern volatile uint32_t TIM2CR1, TIM2EGR, TIM2PSC, TIM2ARR, TIM2CCMR1, TIM2CCER, TIM2CCR1, TIM2CCR2;
-extern volatile uint32_t TIM3CR1, TIM3EGR, TIM3PSC, TIM3ARR, TIM3CCMR1, TIM3CCER, TIM3CCR1, TIM3CCR2;
-extern volatile uint32_t TIM4CR1, TIM4EGR, TIM4PSC, TIM4ARR, TIM4CCMR1, TIM4CCER, TIM4CCR1, TIM4CCR2;
-extern volatile uint32_t TIM5CR1, TIM5EGR, TIM5PSC, TIM5ARR, TIM5CCMR1, TIM5CCER, TIM5CCR1, TIM5CCR2;
+extern volatile uint32_t TIM2CR1, TIM2EGR, TIM2PSC, TIM2ARR, TIM2CCMR1, TIM2CCMR2, TIM2CCER, TIM2CCR1, TIM2CCR2, TIM2CCR3, TIM2CCR4;
+extern volatile uint32_t TIM3CR1, TIM3EGR, TIM3PSC, TIM3ARR, TIM3CCMR1, TIM3CCMR2, TIM3CCER, TIM3CCR1, TIM3CCR2, TIM3CCR3, TIM3CCR4;
+extern volatile uint32_t TIM4CR1, TIM4EGR, TIM4PSC, TIM4ARR, TIM4CCMR1, TIM4CCMR2, TIM4CCER, TIM4CCR1, TIM4CCR2, TIM4CCR3, TIM4CCR4;
+extern volatile uint32_t TIM5CR1, TIM5EGR, TIM5PSC, TIM5ARR, TIM5CCMR1, TIM5CCMR2, TIM5CCER, TIM5CCR1, TIM5CCR2, TIM5CCR3, TIM5CCR4;
 
 void mock_sfr_reset(void);
 
